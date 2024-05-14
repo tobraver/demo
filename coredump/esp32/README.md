@@ -29,3 +29,8 @@
 
 ## 解析Coredum文件
 
+`python E:/Espressif/frameworks/esp-idf-v4.4.7/components/espcoredump/espcoredump.py info_corefile -t raw -c coredump.bin .\main.elf`
+
+![CoreInfo_1](../doc/img/esp32_core_info_1.png)
+
+![CoreInfo_2](../doc/img/esp32_core_info_2.png)
