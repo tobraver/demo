@@ -29,3 +29,11 @@ E:/Espressif/frameworks/esp-idf-v4.4.7/components/freertos/port/xtensa/port.c:14
 
 ![ESP32 monitor结果](../doc/img/esp3232_monitor.png)
 
+
+
+# 特殊错误
+
+`A0` 地址如果是 `0x8xxxxxxx` 转成为 `0x4xxxxxxx`， 分析地址所位置。
+
+![ESP32 特殊错误](../doc/img/esp32_failed.png)
+
