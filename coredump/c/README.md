@@ -12,18 +12,22 @@ ulimit -c unlimited
 ulimit -a
 ```
 
+# 运行程序
 
-
-# 查看位置
-
-[addr2line使用方法](https://blog.csdn.net/mingtiannihaoabc/article/details/131263823)
+## 终端输出
 
 ```
-/* "static" means don't export the symbol... */
-static void function_2(void)
-
-addr2line -f -p -e crash_c 0x1288
-function_2 at /home/wz/project/demo/crash/c/crash_c.c:22
+function_1
+function_2
+function_3
+Segmentation fault (core dumped)
 ```
 
+## coredump输出
+程序运行目录下，会生成 `core` 文件。
+
+## 调试core文件
+`gdb coredump_c core`
+
+![coredump 调试结果](../doc/img/coredump_c_debuge.png)
 
