@@ -1,17 +1,28 @@
+#include <iostream>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h> // stderror
 #include <signal.h> // signal
 #include <execinfo.h> // backtrace, backtrace_symbols, backtrace_symbols_fd
+#include <dlfcn.h> // dladdr
+#include <cxxabi.h> // abi::__cxa_demangle
 
 void signal_handler(int signum);
 void crash_trace_dump(int signum);
+
+void function_3(int* value)
+{
+    printf("function_3\n");
+	*value = 10;
+    printf("content: %d\n", *value);
+}
 
 void function_3(void)
 {
     printf("function_3\n");
     int* p = NULL;
-    *p = 123;
+    // *p = 123;
     printf("value: %d\n", *p);
 }
 
@@ -19,7 +30,8 @@ void function_3(void)
 static void function_2(void)
 {
     printf("function_2\n");
-    function_3();
+    // function_3();
+	function_3(NULL);
 }
 
 void function_1(void)
@@ -55,12 +67,31 @@ void crash_trace_dump(int signum)
 	printf("================================================================\n");
 
 	char **strings = backtrace_symbols(bt_buffer, size);
-	if (strings) 
-    {
-        for(size_t i = 0; i < size; i++ )
-        {
-		    printf("[%ld]: %s\n", i, strings[i]);
-        }
+	if (strings) {
+		for (size_t i = 1; i < size; i++) {
+
+            char fname[1024];
+			Dl_info info;
+            snprintf(fname, 1024, "%s", strings[i]);
+
+			if (dladdr(bt_buffer[i], &info) && info.dli_sname) {
+
+				if (info.dli_sname[0] == '_') {
+					int status = 0;
+					char *demangled = abi::__cxa_demangle(info.dli_sname, nullptr, nullptr, &status);
+
+					if (status == 0 && demangled) {
+                        snprintf(fname, 1024, "%s", demangled);
+					}
+
+					if (demangled) {
+						free(demangled);
+					}
+				}
+			}
+            printf("[%lu] %s\n", i, fname);
+		}
+
 		free(strings);
 	}
 	printf("================================================================\n");
